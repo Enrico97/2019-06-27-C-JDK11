@@ -7,6 +7,7 @@ package it.polito.tdp.crimes;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.crimes.model.Adiacenza;
 import it.polito.tdp.crimes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,10 +26,10 @@ public class CrimesController {
     private URL location;
 
     @FXML // fx:id="boxCategoria"
-    private ComboBox<?> boxCategoria; // Value injected by FXMLLoader
+    private ComboBox<String> boxCategoria; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAnalisi"
     private Button btnAnalisi; // Value injected by FXMLLoader
@@ -46,6 +47,13 @@ public class CrimesController {
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Crea grafo...\n");
+    	if(boxCategoria.getValue()==null || boxGiorno.getValue()==null) {
+    		txtResult.appendText("selezionare categoria e giorno");
+    		return; }
+    	model.creaGrafo(boxCategoria.getValue(), boxGiorno.getValue());
+    	txtResult.appendText("grafo creato\n");
+    	for(Adiacenza a : model.stampare(boxCategoria.getValue(), boxGiorno.getValue()))
+    		txtResult.appendText(a.toString()+"\n");
     }
 
     @FXML
@@ -67,5 +75,7 @@ public class CrimesController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	boxCategoria.getItems().addAll(model.listaReati());
+    	boxGiorno.getItems().addAll(model.listaGiorni());
     }
 }
