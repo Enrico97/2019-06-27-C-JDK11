@@ -35,7 +35,7 @@ public class CrimesController {
     private Button btnAnalisi; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxArco"
-    private ComboBox<?> boxArco; // Value injected by FXMLLoader
+    private ComboBox<Adiacenza> boxArco; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnPercorso"
     private Button btnPercorso; // Value injected by FXMLLoader
@@ -52,6 +52,7 @@ public class CrimesController {
     		return; }
     	model.creaGrafo(boxCategoria.getValue(), boxGiorno.getValue());
     	txtResult.appendText("grafo creato\n");
+    	boxArco.getItems().addAll(model.archi(boxCategoria.getValue(), boxGiorno.getValue()));
     	for(Adiacenza a : model.stampare(boxCategoria.getValue(), boxGiorno.getValue()))
     		txtResult.appendText(a.toString()+"\n");
     }
@@ -60,6 +61,10 @@ public class CrimesController {
     void doCalcolaPercorso(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Calcola percorso...\n");
+    	for(String s : model.cammino(boxArco.getValue())) {
+    		txtResult.appendText(s+"\n");
+    	}
+    	txtResult.appendText(model.best()+"");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

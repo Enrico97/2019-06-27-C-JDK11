@@ -14,6 +14,8 @@ public class Model {
 	
 	EventsDao dao = new EventsDao();
 	Graph<String, DefaultWeightedEdge> grafo;
+	List<String> soluzione;
+	int best=0;
 	
 	public List<String> listaReati() {
 		return dao.listaReati();
@@ -53,4 +55,35 @@ public class Model {
 		return stampare;
 	}
 	
+	public List<Adiacenza> archi(String categoria, int giorno) {
+		return dao.archi(categoria, giorno);
+	}
+	
+	public List<String> cammino(Adiacenza a) {
+		List<String> parziale = new ArrayList<>();
+		parziale.add(a.getS1());
+		cerca(parziale, 0, a);
+		return soluzione;
+	}
+
+	private void cerca(List<String> parziale, int peso, Adiacenza a) {
+		if(parziale.get(parziale.size()-1).equals(a.getS2())) {
+			if(peso>best) {
+				best=peso;
+				soluzione = new ArrayList<>(parziale);
+			}
+			return;
+		}
+		for(String s : grafo.vertexSet()) {
+			if(!parziale.contains(s)) {
+				parziale.add(s);
+				cerca(parziale, (int) (peso+grafo.getEdgeWeight(grafo.getEdge(parziale.get(parziale.size()-2), s))), a);
+				parziale.remove(parziale.size()-1);
+			}
+		}
+	}
+	
+	public int best() {
+		return best;
+	}
 }
